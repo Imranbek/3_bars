@@ -1,18 +1,11 @@
 import json
 import os
-import sys
 from json import JSONDecodeError
 from math import sqrt
 
 
 def main():
-    if len(sys.argv) == 1:
-        path = 'bard_data.txt'
-    elif len(sys.argv) == 2:
-        path = sys.argv[1]
-    else:
-        exit('Try again with right format '
-             '"$ python pprint_json.py <path to file>"')
+    path = 'bard_data.txt'
 
     bars_data = get_dict_from_file(path)
     if bars_data is None:
