@@ -139,14 +139,8 @@ def print_bar_data_from_dict(bard_data: dict):
     try:
         print('\tBar name - {}'.format(bard_data['properties']
                                        ['Attributes']['Name']))
-    except KeyError:
-        pass
-    try:
         print('\tBar address - {}'.format(bard_data['properties']
                                           ['Attributes']['Address']))
-    except KeyError:
-        pass
-    try:
         print('\tBar phone - {}'.format(bard_data['properties']
                                         ['Attributes']['PublicPhone']
                                         [0]['PublicPhone']))
