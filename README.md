@@ -1,20 +1,19 @@
-# Ближайшие бары
+# Nearest bars
 
 Here is the script which helps to find the nearest bar, the biggest bar and the smallest bar.
 
-# Как запустить
+# Quickstart
 
-Скрипт требует для своей работы установленного интерпретатора Python версии 3.5
+For start script you need to install Python 3.5+ on your machine and run the script in console/terminal.
 
-Запуск на Linux/Windows:
+How to run script on Linux/Windows:
 
 ```bash
 
 $ python bars.py # possibly requires call of python3 executive instead of just python
 
 ```
-
-После запуска необходимо ввести координаты своей геолокации в соответствующих полях.
+After running you should follow the instructions on your screen and enter the latitude and longitude of your current location. 
 
 # Output example:
 ```
@@ -35,6 +34,6 @@ The smallest bar is:
 ```
 
 
-# Цели проекта
+# Project Goals
 
-Код создан в учебных целях. В рамках учебного курса по веб-разработке - [DEVMAN.org](https://devman.org)
+The code is written for educational purposes. Training course for web-developers - [DEVMAN.org](https://devman.org)

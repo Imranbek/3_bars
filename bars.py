@@ -1,4 +1,5 @@
 import json
+import os
 import sys
 from json import JSONDecodeError
 from math import sqrt
@@ -13,6 +14,11 @@ def main():
         exit('Try again with right format "$ python pprint_json.py <path to file>"')
 
     bars_data = get_dict_from_file(path)
+    if bars_data is None:
+        exit('File was not found')
+    elif bars_data is False:
+        exit('Data in the current file is not a dictionary')
+
     list_of_bars_data = bars_data['features']
     user_location = get_user_location_data()
 
@@ -27,24 +33,16 @@ def main():
 def get_biggest_bar_from_list(list_of_bars_data: list):
     assert list_of_bars_data is not None, 'There is no data in file, try another file'
     assert type(list_of_bars_data) is list, 'There is no list of bar data in file, try another file'
-    the_biggest_bar = list_of_bars_data[0]
-    for bar_data in list_of_bars_data:
-        if bar_data['properties']['Attributes']['SeatsCount'] > the_biggest_bar['properties']['Attributes']['SeatsCount']:
-            the_biggest_bar = bar_data
-        else:
-            pass
+    the_biggest_bar = max(list_of_bars_data, key=lambda k: k['properties']['Attributes']['SeatsCount'])
+
     return the_biggest_bar
 
 
 def get_smallest_bar(list_of_bars_data: list):
     assert list_of_bars_data is not None, 'There is no data in file, try another file'
     assert type(list_of_bars_data) is list, 'There is no list of bar data in file, try another file'
-    the_smallest_bar = list_of_bars_data[0]
-    for bar_data in list_of_bars_data:
-        if bar_data['properties']['Attributes']['SeatsCount'] < the_smallest_bar['properties']['Attributes']['SeatsCount']:
-            the_smallest_bar = bar_data
-        else:
-            pass
+    the_smallest_bar = min(list_of_bars_data, key=lambda k: k['properties']['Attributes']['SeatsCount'])
+
     return the_smallest_bar
 
 
@@ -70,12 +68,12 @@ def get_distance_between_two_points(fist_point_location: list, second_point_loca
 def get_dict_from_file(path):
     file_data = load_file_data(file_path=path)
     if file_data is None:
-        exit('File was not found')
+        return None
     try:
         dict_file_data = json.loads(file_data)
         return dict_file_data
     except JSONDecodeError:
-        exit('Data in the current file is not a dictionary')
+        return False
 
 
 def get_user_location_data():
@@ -86,8 +84,7 @@ def get_user_location_data():
     # LATITUDE
     attempts_counter = 0
     while latitude_mark is False:
-        if attempts_counter >= attempts_limit:
-            exit('Number of attempts exceeded. Try to restart the script.')
+        assert attempts_counter < attempts_limit, 'Number of attempts exceeded. Try to restart the script.'
         print('Latitude (example: 10.1241231) :')
         latitude = input()
         try:
@@ -100,8 +97,7 @@ def get_user_location_data():
     # LONGITUDE
     attempts_counter = 0
     while longitude_mark is False:
-        if attempts_counter >= attempts_limit:
-            exit('Number of attempts exceeded. Try to restart the script.')
+        assert attempts_counter < attempts_limit, 'Number of attempts exceeded. Try to restart the script.'
         print('Longitude (example: 10.1241231) :')
         longitude = input()
         try:
@@ -115,11 +111,10 @@ def get_user_location_data():
 
 
 def load_file_data(file_path):
-    try:
-        with open(file_path, "r") as file:
-            return file.read()
-    except FileNotFoundError:
+    if not os.path.exists(file_path):
         return None
+    with open(file_path, "r") as file:
+        return file.read()
 
 
 def print_bar_data_from_dict(bard_data: dict):
