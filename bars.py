@@ -94,38 +94,34 @@ def get_dict_from_file(path):
 
 def get_user_location_data():
     print('Please input your latitude and longitude of your location\n')
-    latitude_mark = False
-    longitude_mark = False
+    latitude_mark = 0
+    longitude_mark = 0
     attempts_limit = 15
     # LATITUDE
     attempts_counter = 0
-    while latitude_mark is False:
+    while type(latitude_mark) is int:
         assert attempts_counter < attempts_limit, \
             'Number of attempts exceeded. Try to restart the script.'
         print('Latitude (example: 10.1241231) :')
         latitude = input()
         try:
-            latitude_float = float(latitude)
-            latitude_mark = True
+            latitude_mark = float(latitude)
         except ValueError:
-            pass
-        attempts_counter += 1
+            attempts_counter += 1
 
     # LONGITUDE
     attempts_counter = 0
-    while longitude_mark is False:
+    while type(longitude_mark) is int:
         assert attempts_counter < attempts_limit, \
             'Number of attempts exceeded. Try to restart the script.'
         print('Longitude (example: 10.1241231) :')
         longitude = input()
         try:
-            longitude_float = float(longitude)
-            longitude_mark = True
+            longitude_mark = float(longitude)
         except ValueError:
-            pass
-        attempts_counter += 1
+            attempts_counter += 1
 
-    return [latitude_float, longitude_float]
+    return [latitude_mark, longitude_mark]
 
 
 def load_file_data(file_path):
@@ -136,16 +132,13 @@ def load_file_data(file_path):
 
 
 def print_bar_data_from_dict(bard_data: dict):
-    try:
-        print('\tBar name - {}'.format(bard_data['properties']
-                                       ['Attributes']['Name']))
-        print('\tBar address - {}'.format(bard_data['properties']
-                                          ['Attributes']['Address']))
-        print('\tBar phone - {}'.format(bard_data['properties']
-                                        ['Attributes']['PublicPhone']
-                                        [0]['PublicPhone']))
-    except KeyError:
-        pass
+    print('\tBar name - {}'.format(bard_data['properties']
+                                   ['Attributes']['Name']))
+    print('\tBar address - {}'.format(bard_data['properties']
+                                      ['Attributes']['Address']))
+    print('\tBar phone - {}'.format(bard_data['properties']
+                                    ['Attributes']['PublicPhone']
+                                    [0]['PublicPhone']))
 
 
 if __name__ == "__main__":
