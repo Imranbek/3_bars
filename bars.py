@@ -87,34 +87,23 @@ def get_dict_from_file(path):
 
 def get_user_location_data():
     print('Please input your latitude and longitude of your location\n')
-    latitude_mark = 0
-    longitude_mark = 0
+    mark_dict = {'Latitude': 0,
+                 'Longitude': 0}
     attempts_limit = 15
-    # LATITUDE
-    attempts_counter = 0
-    while type(latitude_mark) is int:
-        assert attempts_counter < attempts_limit, \
-            'Number of attempts exceeded. Try to restart the script.'
-        print('Latitude (example: 10.1241231) :')
-        latitude = input()
-        try:
-            latitude_mark = float(latitude)
-        except ValueError:
-            attempts_counter += 1
 
-    # LONGITUDE
-    attempts_counter = 0
-    while type(longitude_mark) is int:
-        assert attempts_counter < attempts_limit, \
-            'Number of attempts exceeded. Try to restart the script.'
-        print('Longitude (example: 10.1241231) :')
-        longitude = input()
-        try:
-            longitude_mark = float(longitude)
-        except ValueError:
-            attempts_counter += 1
+    for name, mark in mark_dict.items():
+        attempts_counter = 0
+        while type(mark_dict[name]) is int:
+            assert attempts_counter < attempts_limit, \
+                'Number of attempts exceeded. Try to restart the script.'
+            print('{} (example: 10.1241231) :'.format(name))
+            location_param = input()
+            try:
+                mark_dict[name] = float(location_param)
+            except ValueError:
+                attempts_counter += 1
 
-    return [latitude_mark, longitude_mark]
+    return [mark_dict['Latitude'], mark_dict['Longitude']]
 
 
 def load_file_data(file_path):
