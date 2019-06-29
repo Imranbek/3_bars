@@ -25,7 +25,8 @@ def main():
     user_location = get_user_location()
 
     for point in user_location:
-        assert point is not None, 'Wrong format of location parameter. Please try again.'
+        assert point is not None, 'Wrong format of location parameter.' \
+                                  ' Please try again.'
 
     print('\nThe closest bar is: ')
     print_bar_info(get_closest_bar(bars, user_location))
