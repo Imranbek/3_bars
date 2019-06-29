@@ -1,127 +1,116 @@
 import json
 import os
+import sys
 from json import JSONDecodeError
 from math import sqrt
 
 
 def main():
-    path = 'bard_data.txt'
+    if len(sys.argv) == 2:
+        path = sys.argv[1]
+    else:
+        exit('Try again with right format "$ python bars.py <path to file>"')
 
-    bars_data = get_dict_from_file(path)
-    if bars_data is None:
+    bars = get_list_from_file(path)
+    if bars is None:
         exit('File was not found')
-    elif bars_data is False:
+    elif bars is False:
         exit('Data in the current file is not a dictionary')
 
-    list_of_bars_data = bars_data['features']
-    user_location = get_user_location_data()
-
-    print("\nThe closest bar is: ")
-    print_bar_data_from_dict(get_closest_bar(list_of_bars_data,
-                                             user_location))
-    print("\nThe biggest bar is: ")
-    print_bar_data_from_dict(get_biggest_bar_from_list(list_of_bars_data))
-    print("\nThe smallest bar is: ")
-    print_bar_data_from_dict(get_smallest_bar(list_of_bars_data))
-
-
-def get_biggest_bar_from_list(list_of_bars_data: list):
-    assert list_of_bars_data is not None, \
+    bars = bars['features']
+    assert bars is not None, \
         'There is no data in file, try another file'
-    assert type(list_of_bars_data) is list, \
+    assert type(bars) is list, \
         'There is no list of bar data in file, try another file'
-    the_biggest_bar = max(list_of_bars_data,
+    user_location = get_user_location()
+
+    print('\nThe closest bar is: ')
+    print_bar_info(get_closest_bar(bars, user_location))
+    print('\nThe biggest bar is: ')
+    print_bar_info(get_biggest_bar_from_list(bars))
+    print('\nThe smallest bar is: ')
+    print_bar_info(get_smallest_bar(bars))
+
+
+def get_biggest_bar_from_list(bars: list):
+    the_biggest_bar = max(bars,
                           key=lambda k: k['properties']
                           ['Attributes']['SeatsCount'])
 
     return the_biggest_bar
 
 
-def get_smallest_bar(list_of_bars_data: list):
-    assert list_of_bars_data is not None, \
-        'There is no data in file, try another file'
-    assert type(list_of_bars_data) is list, \
-        'There is no list of bar data in file, try another file'
-    the_smallest_bar = min(list_of_bars_data,
+def get_smallest_bar(bars: list):
+    the_smallest_bar = min(bars,
                            key=lambda k: k['properties']
                            ['Attributes']['SeatsCount'])
 
     return the_smallest_bar
 
 
-def get_closest_bar(bar_data: list, user_location: list):
-    nearest_bar = bar_data[0]
-    bar_location = nearest_bar['geometry']['coordinates']
-    nearest_bar_distance = get_distance_between_two_points(bar_location,
-                                                           user_location)
-    for bar in bar_data:
-        bar_location = bar['geometry']['coordinates']
-        current_bar_distance = get_distance_between_two_points(bar_location,
-                                                               user_location)
-        if current_bar_distance < nearest_bar_distance:
-            nearest_bar = bar
-            nearest_bar_distance = current_bar_distance
+def get_closest_bar(bars: list, user_location: list):
+    nearest_bar = min(bars,
+                      key=lambda b:
+                      get_distance_between_points(b['geometry']['coordinates'],
+                                                  user_location))
+
     return nearest_bar
 
 
-def get_distance_between_two_points(fist_point_location: list,
-                                    second_point_location: list):
-    assert len(fist_point_location) == 2 and len(second_point_location) == 2, \
-        'Wrong format of location points'
-    x_difference = fist_point_location[0] - second_point_location[0]
-    y_difference = fist_point_location[1] - second_point_location[1]
+def get_distance_between_points(first_point: list,
+                                second_point: list):
+    assert len(first_point) == 2 and \
+           len(second_point) == 2, 'Wrong format of location points'
+    x_difference = first_point[0] - second_point[0]
+    y_difference = first_point[1] - second_point[1]
     distance = sqrt(x_difference ** 2 + y_difference ** 2)
     return distance
 
 
-def get_dict_from_file(path):
-    file_data = load_file_data(file_path=path)
-    if file_data is None:
+def get_list_from_file(path):
+    file = load_file_data(file_path=path)
+    if file is None:
         return None
     try:
-        dict_file_data = json.loads(file_data)
-        return dict_file_data
+        file_data = json.loads(file)
+        return file_data
     except JSONDecodeError:
         return False
 
 
-def get_user_location_data():
-    print('Please input your latitude and longitude of your location\n')
-    mark_dict = {'Latitude': 0,
-                 'Longitude': 0}
-    attempts_limit = 15
+def get_user_location():
+    print('Please input your latitude and longitude of your location.\n'
+          'Use only digits and dot as separator.')
+    coordinates = {'Latitude': 0,
+                   'Longitude': 0}
 
-    for name, mark in mark_dict.items():
-        attempts_counter = 0
-        while type(mark_dict[name]) is int:
-            assert attempts_counter < attempts_limit, \
-                'Number of attempts exceeded. Try to restart the script.'
-            print('{} (example: 10.1241231) :'.format(name))
-            location_param = input()
-            try:
-                mark_dict[name] = float(location_param)
-            except ValueError:
-                attempts_counter += 1
+    for name, mark in coordinates.items():
+        print('{} (example: 10.1241231) :'.format(name))
+        location_param = input()
+        try:
+            coordinates[name] = float(location_param)
+        except ValueError:
+            exit('Wrong format of location parameter. Please try again.')
 
-    return [mark_dict['Latitude'], mark_dict['Longitude']]
+    return [coordinates['Latitude'], coordinates['Longitude']]
 
 
 def load_file_data(file_path):
     if not os.path.exists(file_path):
         return None
-    with open(file_path, "r") as file:
+    with open(file_path, 'r') as file:
         return file.read()
 
 
-def print_bar_data_from_dict(bard_data: dict):
-    print('\tBar name - {}'.format(bard_data['properties']
+def print_bar_info(bar: dict):
+    print('\tBar name - {}'.format(bar['properties']
                                    ['Attributes']['Name']))
-    print('\tBar address - {}'.format(bard_data['properties']
+    print('\tBar address - {}'.format(bar['properties']
                                       ['Attributes']['Address']))
-    print('\tBar phone - {}'.format(bard_data['properties']
+    print('\tBar phone - {}'.format(bar['properties']
                                     ['Attributes']['PublicPhone']
                                     [0]['PublicPhone']))
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
