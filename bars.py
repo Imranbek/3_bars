@@ -24,6 +24,9 @@ def main():
         'There is no list of bar data in file, try another file'
     user_location = get_user_location()
 
+    for point in user_location:
+        assert point is not None, 'Wrong format of location parameter. Please try again.'
+
     print('\nThe closest bar is: ')
     print_bar_info(get_closest_bar(bars, user_location))
     print('\nThe biggest bar is: ')
@@ -68,12 +71,12 @@ def get_distance_between_points(first_point: list,
 
 
 def get_list_from_file(path):
-    file = load_file_data(file_path=path)
-    if file is None:
+    file_data = load_file_data(file_path=path)
+    if file_data is None:
         return None
     try:
-        file_data = json.loads(file)
-        return file_data
+        json_file_data = json.loads(file_data)
+        return json_file_data
     except JSONDecodeError:
         return False
 
@@ -81,8 +84,8 @@ def get_list_from_file(path):
 def get_user_location():
     print('Please input your latitude and longitude of your location.\n'
           'Use only digits and dot as separator.')
-    coordinates = {'Latitude': 0,
-                   'Longitude': 0}
+    coordinates = {'latitude': 0,
+                   'longitude': 0}
 
     for name, mark in coordinates.items():
         print('{} (example: 10.1241231) :'.format(name))
@@ -90,9 +93,10 @@ def get_user_location():
         try:
             coordinates[name] = float(location_param)
         except ValueError:
+            coordinates[name] = None
             exit('Wrong format of location parameter. Please try again.')
 
-    return [coordinates['Latitude'], coordinates['Longitude']]
+    return [coordinates['latitude'], coordinates['longitude']]
 
 
 def load_file_data(file_path):
