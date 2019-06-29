@@ -18,10 +18,9 @@ def main():
         exit('Data in the current file is not a dictionary')
 
     bars = bars['features']
-    assert bars is not None, \
-        'There is no data in file, try another file'
-    assert type(bars) is list, \
-        'There is no list of bar data in file, try another file'
+    assert bars is not None, 'There is no data in file, try another file'
+    assert type(bars) is list, 'There is no list of bar data in file.' \
+                               'Try another file'
     user_location = get_user_location()
 
     for point in user_location:
