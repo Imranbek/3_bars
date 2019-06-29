@@ -94,8 +94,6 @@ def get_user_location():
             coordinates[name] = float(location_param)
         except ValueError:
             coordinates[name] = None
-            exit('Wrong format of location parameter. Please try again.')
-
     return [coordinates['latitude'], coordinates['longitude']]
 
 
