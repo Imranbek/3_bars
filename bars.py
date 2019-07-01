@@ -11,7 +11,7 @@ def main():
     else:
         exit('Try again with right format "$ python bars.py <path to file>"')
 
-    bars = get_list_from_file(path)
+    bars = get_list_of_bars_from_file(path)
     if bars is None:
         exit('File was not found')
     elif bars is False:
@@ -19,13 +19,11 @@ def main():
 
     bars = bars['features']
     assert bars is not None, 'There is no data in file, try another file'
-    assert type(bars) is list, 'There is no list of bar data in file.' \
-                               'Try another file'
+    assert type(bars) is list, 'There is no list of bar data in file. Try another file'
     user_location = get_user_location()
 
     for point in user_location:
-        assert point is not None, 'Wrong format of location parameter.' \
-                                  ' Please try again.'
+        assert point is not None, 'Wrong format of location parameter. Please try again.'
 
     print('\nThe closest bar is: ')
     print_bar_info(get_closest_bar(bars, user_location))
@@ -37,16 +35,14 @@ def main():
 
 def get_biggest_bar_from_list(bars: list):
     the_biggest_bar = max(bars,
-                          key=lambda k: k['properties']
-                          ['Attributes']['SeatsCount'])
+                          key=lambda k: k['properties']['Attributes']['SeatsCount'])
 
     return the_biggest_bar
 
 
 def get_smallest_bar(bars: list):
     the_smallest_bar = min(bars,
-                           key=lambda k: k['properties']
-                           ['Attributes']['SeatsCount'])
+                           key=lambda k: k['properties']['Attributes']['SeatsCount'])
 
     return the_smallest_bar
 
@@ -54,8 +50,7 @@ def get_smallest_bar(bars: list):
 def get_closest_bar(bars: list, user_location: list):
     nearest_bar = min(bars,
                       key=lambda b:
-                      get_distance_between_points(b['geometry']['coordinates'],
-                                                  user_location))
+                      get_distance_between_points(b['geometry']['coordinates'], user_location))
 
     return nearest_bar
 
@@ -70,7 +65,7 @@ def get_distance_between_points(first_point: list,
     return distance
 
 
-def get_list_from_file(path):
+def get_list_of_bars_from_file(path):
     file_data = load_file_data(file_path=path)
     if file_data is None:
         return None
